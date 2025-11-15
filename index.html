@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ISS Tracker</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Leaflet.js for map -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+</head>
+<body>
+  <header>
+    <h1>ISS Tracker Dashboard</h1>
+  </header>
+
+  <section class="info">
+    <p>Latest ISS Data:</p>
+    <ul>
+      <li>Latitude: <span id="lat">-</span></li>
+      <li>Longitude: <span id="lon">-</span></li>
+      <li>Altitude (km): <span id="alt">-</span></li>
+      <li>Velocity (km/h): <span id="vel">-</span></li>
+    </ul>
+  </section>
+
+  <section class="map-container">
+    <h2>Live ISS Map</h2>
+    <div id="map" style="height: 400px;"></div>
+  </section>
+
+  <section class="charts">
+    <h2>ISS Analytics (Last 50 Points)</h2>
+    <canvas id="latChart"></canvas>
+    <canvas id="lonChart"></canvas>
+    <canvas id="altChart"></canvas>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>
