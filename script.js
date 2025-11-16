@@ -68,13 +68,14 @@ async function fetchISS() {
     issMarker.setLatLng([lat, lon]);
     map.setView([lat, lon]);
 
-    // Add to CSV
-    csvData.push([data.timestamp, lat, lon, alt, vel]);
-
     // Format: YYYY-MM-DD HH:mm:ss (24 hour)
     let formattedTime = new Date(data.timestamp * 1000)
       .toLocaleString("en-GB", { hour12: false })
       .replace(",", "");
+
+    // Add to CSV (now correct)
+    csvData.push([formattedTime, lat, lon, alt, vel]);
+
 
     // Send data to Google Sheets
     fetch("https://script.google.com/macros/s/AKfycbx9ozQKit8YNCm4UTd6bfXiYT9pJ8RzcQwyKRi9UmVbz6BFpaL-fEW3GaGb_-vBCQfPvg/exec", {
