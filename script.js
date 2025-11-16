@@ -77,17 +77,11 @@ async function fetchISS() {
         longitude: lon,
         altitude: alt,
         velocity: vel
-      }),
-      mode: "cors" // remove "no-cors" to allow Apps Script to receive JSON
+      })
     })
-    .then(res => res.text())
-    .then(result => console.log("Sheet response:", result))
-    .catch(err => console.error("Error sending to sheet:", err));
-
-    // Update chart
-    altitudeChart.data.labels.push(timestamp);
-    altitudeChart.data.datasets[0].data.push(alt);
-    altitudeChart.update();
+      .then(res => res.text())
+      .then(result => console.log("Sheet response:", result))
+      .catch(err => console.error("Error sending to sheet:", err));
 
   } catch (e) {
     console.error("API error:", e);
@@ -100,8 +94,8 @@ fetchISS();
 
 // Download CSV
 document.getElementById("downloadCsvBtn").addEventListener("click", () => {
-  let csvContent = "data:text/csv;charset=utf-8," 
-      + csvData.map(e => e.join(",")).join("\n");
+  let csvContent = "data:text/csv;charset=utf-8,"
+    + csvData.map(e => e.join(",")).join("\n");
 
   const a = document.createElement("a");
   a.href = encodeURI(csvContent);
