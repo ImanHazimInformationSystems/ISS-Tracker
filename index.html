@@ -1,43 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ISS Tracker</title>
-  <link rel="stylesheet" href="style.css">
-  <!-- Chart.js CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- Leaflet.js for map -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ISS Tracker (WTIA API)</title>
+    <link rel="stylesheet" href="style.css" />
+
+    <!-- Leaflet Map Library -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  <header>
-    <h1>ISS Tracker Dashboard</h1>
-  </header>
+    <h1>🌍 ISS Live Tracker</h1>
 
-  <section class="info">
-    <p>Latest ISS Data:</p>
-    <ul>
-      <li>Latitude: <span id="lat">-</span></li>
-      <li>Longitude: <span id="lon">-</span></li>
-      <li>Altitude (km): <span id="alt">-</span></li>
-      <li>Velocity (km/h): <span id="vel">-</span></li>
-    </ul>
-  </section>
+    <div id="dashboard">
+        <div id="issInfo">
+            <h2>Current ISS Telemetry</h2>
+            <p><strong>Latitude:</strong> <span id="lat">--</span></p>
+            <p><strong>Longitude:</strong> <span id="lon">--</span></p>
+            <p><strong>Altitude (km):</strong> <span id="alt">--</span></p>
+            <p><strong>Velocity (km/h):</strong> <span id="vel">--</span></p>
+            <p><strong>Timestamp:</strong> <span id="time">--</span></p>
 
-  <section class="map-container">
-    <h2>Live ISS Map</h2>
-    <div id="map" style="height: 400px;"></div>
-  </section>
+            <button id="downloadCsvBtn">⬇ Download CSV</button>
+        </div>
 
-  <section class="charts">
-    <h2>ISS Analytics (Last 50 Points)</h2>
-    <canvas id="latChart"></canvas>
-    <canvas id="lonChart"></canvas>
-    <canvas id="altChart"></canvas>
-  </section>
+        <div id="map"></div>
+    </div>
 
-  <script src="script.js"></script>
+    <h2>Altitude History (Live)</h2>
+    <canvas id="altitudeChart"></canvas>
+
+    <script src="script.js"></script>
 </body>
 </html>

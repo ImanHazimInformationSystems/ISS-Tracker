@@ -1,82 +1,94 @@
-// Replace with your deployed Google Apps Script Web App URL
-const apiUrl = "YOUR_GOOGLE_APPS_SCRIPT_URL";
+const API_URL = "https://api.wheretheiss.at/v1/satellites/25544";
 
-// Maximum points to display in charts
-const MAX_POINTS = 50;
+let map = L.map("map").setView([0, 0], 2);
 
-// Arrays to store last N points
-let latData = [];
-let lonData = [];
-let altData = [];
-let timeLabels = [];
-
-// Initialize Leaflet map
-const map = L.map('map').setView([0, 0], 2);
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  attribution: '&copy; OpenStreetMap contributors'
+// Map tiles
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 7,
 }).addTo(map);
-const issMarker = L.marker([0,0]).addTo(map);
 
-// Initialize Charts
-const latChart = new Chart(document.getElementById('latChart'), {
-  type: 'line',
-  data: { labels: timeLabels, datasets: [{ label: 'Latitude', data: latData, borderColor: 'red', fill: false }] },
-  options: { responsive: true }
-});
-const lonChart = new Chart(document.getElementById('lonChart'), {
-  type: 'line',
-  data: { labels: timeLabels, datasets: [{ label: 'Longitude', data: lonData, borderColor: 'blue', fill: false }] },
-  options: { responsive: true }
-});
-const altChart = new Chart(document.getElementById('altChart'), {
-  type: 'line',
-  data: { labels: timeLabels, datasets: [{ label: 'Altitude (km)', data: altData, borderColor: 'green', fill: false }] },
-  options: { responsive: true }
+// ISS icon
+let issIcon = L.icon({
+    iconUrl: "https://upload.wikimedia.org/wikipedia/commons/d/d0/International_Space_Station.svg",
+    iconSize: [50, 32],
 });
 
-// Fetch ISS data from Google Sheets via Apps Script
-async function fetchISSData() {
-  try {
-    const response = await fetch(apiUrl);
-    const data = await response.json();
+let issMarker = L.marker([0, 0], { icon: issIcon }).addTo(map);
 
-    if (!data || data.length === 0) return;
+// CSV data store
+let csvData = [["timestamp", "latitude", "longitude", "altitude_km", "velocity_kmh"]];
 
-    const latest = data[data.length - 1];
-    document.getElementById('lat').innerText = latest.latitude.toFixed(3);
-    document.getElementById('lon').innerText = latest.longitude.toFixed(3);
-    document.getElementById('alt').innerText = latest.altitude.toFixed(1);
-    document.getElementById('vel').innerText = latest.velocity.toFixed(0);
+// Chart.js setup
+let ctx = document.getElementById("altitudeChart").getContext("2d");
 
-    // Update map
-    const lat = latest.latitude;
-    const lon = latest.longitude;
-    issMarker.setLatLng([lat, lon]);
-    map.setView([lat, lon], map.getZoom());
+let altitudeChart = new Chart(ctx, {
+    type: "line",
+    data: {
+        labels: [],
+        datasets: [
+            {
+                label: "ISS Altitude (km)",
+                data: [],
+                borderWidth: 2,
+                fill: false,
+            },
+        ],
+    },
+    options: {
+        responsive: true,
+        scales: {
+            x: { title: { display: true, text: "Time" } },
+            y: { title: { display: true, text: "Altitude (km)" } },
+        },
+    },
+});
 
-    // Update charts
-    const timestamp = new Date(latest.timestamp * 1000).toLocaleTimeString();
-    timeLabels.push(timestamp);
-    latData.push(lat);
-    lonData.push(lon);
-    altData.push(latest.altitude);
+async function fetchISS() {
+    try {
+        const response = await fetch(API_URL);
+        const data = await response.json();
 
-    if (timeLabels.length > MAX_POINTS) {
-      timeLabels.shift();
-      latData.shift();
-      lonData.shift();
-      altData.shift();
+        let lat = data.latitude.toFixed(4);
+        let lon = data.longitude.toFixed(4);
+        let alt = data.altitude.toFixed(2);
+        let vel = data.velocity.toFixed(2);
+        let timestamp = new Date(data.timestamp * 1000).toLocaleString();
+
+        // Update UI
+        document.getElementById("lat").textContent = lat;
+        document.getElementById("lon").textContent = lon;
+        document.getElementById("alt").textContent = alt;
+        document.getElementById("vel").textContent = vel;
+        document.getElementById("time").textContent = timestamp;
+
+        // Update map
+        issMarker.setLatLng([lat, lon]);
+        map.setView([lat, lon]);
+
+        // Add to CSV
+        csvData.push([data.timestamp, lat, lon, alt, vel]);
+
+        // Update chart
+        altitudeChart.data.labels.push(timestamp);
+        altitudeChart.data.datasets[0].data.push(alt);
+        altitudeChart.update();
+
+    } catch (e) {
+        console.error("API error:", e);
     }
-
-    latChart.update();
-    lonChart.update();
-    altChart.update();
-
-  } catch (error) {
-    console.error("Error fetching ISS data:", error);
-  }
 }
 
-// Fetch data every 10 seconds
-fetchISSData();
-setInterval(fetchISSData, 10000);
+// Auto-update every 5 seconds
+setInterval(fetchISS, 5000);
+fetchISS();
+
+// Download CSV
+document.getElementById("downloadCsvBtn").addEventListener("click", () => {
+    let csvContent = "data:text/csv;charset=utf-8," 
+        + csvData.map(e => e.join(",")).join("\n");
+
+    const a = document.createElement("a");
+    a.href = encodeURI(csvContent);
+    a.download = "iss_data.csv";
+    a.click();
+});
