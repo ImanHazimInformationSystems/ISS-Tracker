@@ -43,6 +43,7 @@ async function fetchISS() {
 
     fetch("https://script.google.com/macros/s/AKfycbx9ozQKit8YNCm4UTd6bfXiYT9pJ8RzcQwyKRi9UmVbz6BFpaL-fEW3GaGb_-vBCQfPvg/exec", {
       method: "POST",
+       mode: "cors", // <-- important! allow cross-origin
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ timestamp: data.timestamp, latitude: lat, longitude: lon, altitude: alt, velocity: vel })
     })
