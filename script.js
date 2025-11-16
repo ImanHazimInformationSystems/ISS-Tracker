@@ -15,12 +15,11 @@ let issIcon = L.icon({
 
 let issMarker = L.marker([0, 0], { icon: issIcon }).addTo(map);
 
-// CSV data store
-let csvData = [["timestamp", "latitude", "longitude", "altitude_km", "velocity_kmh"]];
+// CSV data store with headers
+let csvData = [["Timestamp", "Latitude", "Longitude", "Altitude_km", "Velocity_kmh"]];
 
 // Chart.js setup
 let ctx = document.getElementById("altitudeChart").getContext("2d");
-
 let altitudeChart = new Chart(ctx, {
   type: "line",
   data: {
@@ -52,7 +51,7 @@ async function fetchISS() {
     let lon = data.longitude.toFixed(4);
     let alt = data.altitude.toFixed(2);
     let vel = data.velocity.toFixed(2);
-    let timestamp = new Date(data.timestamp * 1000).toLocaleString();
+    let timestamp = new Date(data.timestamp * 1000).toLocaleString(); // human-readable
 
     // Update UI
     document.getElementById("lat").textContent = lat;
@@ -66,7 +65,7 @@ async function fetchISS() {
     map.setView([lat, lon]);
 
     // Add to CSV
-    csvData.push([data.timestamp, lat, lon, alt, vel]);
+    csvData.push([timestamp, lat, lon, alt, vel]);
 
     // Send data to Google Sheets
     fetch("https://script.google.com/macros/s/AKfycbx9ozQKit8YNCm4UTd6bfXiYT9pJ8RzcQwyKRi9UmVbz6BFpaL-fEW3GaGb_-vBCQfPvg/exec", {
@@ -75,18 +74,15 @@ async function fetchISS() {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        timestamp: data.timestamp,
+        timestamp: data.timestamp, // keep UNIX timestamp for sheet
         latitude: lat,
         longitude: lon,
         altitude: alt,
         velocity: vel
       })
     })
-      .then(response => response.json())
-      .then(result => console.log("Sheet result:", result))
-      .catch(err => console.error("Error sending to sheet:", err));
-
-
+    .then(() => console.log("Data sent to Google Sheet"))
+    .catch(err => console.error("Error sending to sheet:", err));
 
     // Update chart
     altitudeChart.data.labels.push(timestamp);
@@ -104,8 +100,8 @@ fetchISS();
 
 // Download CSV
 document.getElementById("downloadCsvBtn").addEventListener("click", () => {
-  let csvContent = "data:text/csv;charset=utf-8,"
-    + csvData.map(e => e.join(",")).join("\n");
+  let csvContent = "data:text/csv;charset=utf-8," 
+      + csvData.map(e => e.join(",")).join("\n");
 
   const a = document.createElement("a");
   a.href = encodeURI(csvContent);
