@@ -52,7 +52,10 @@ async function fetchISS() {
     let lon = data.longitude.toFixed(4);
     let alt = data.altitude.toFixed(2);
     let vel = data.velocity.toFixed(2);
-    let timestamp = new Date(data.timestamp * 1000).toLocaleString();
+    let timestamp = new Date(data.timestamp * 1000)
+      .toLocaleString("en-GB", { hour12: false })
+      .replace(",", "");
+
 
     // Update UI
     document.getElementById("lat").textContent = lat;
@@ -68,13 +71,18 @@ async function fetchISS() {
     // Add to CSV
     csvData.push([data.timestamp, lat, lon, alt, vel]);
 
+    // Format: YYYY-MM-DD HH:mm:ss (24 hour)
+    let formattedTime = new Date(data.timestamp * 1000)
+      .toLocaleString("en-GB", { hour12: false })
+      .replace(",", "");
+
     // Send data to Google Sheets
     fetch("https://script.google.com/macros/s/AKfycbx9ozQKit8YNCm4UTd6bfXiYT9pJ8RzcQwyKRi9UmVbz6BFpaL-fEW3GaGb_-vBCQfPvg/exec", {
       method: "POST",
       mode: "no-cors",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        timestamp: data.timestamp, // original UNIX timestamp
+        timestamp: formattedTime, // original UNIX timestamp
         latitude: lat,
         longitude: lon,
         altitude: alt,
