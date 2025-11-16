@@ -71,6 +71,7 @@ async function fetchISS() {
     // Send data to Google Sheets
     fetch("https://script.google.com/macros/s/AKfycbx9ozQKit8YNCm4UTd6bfXiYT9pJ8RzcQwyKRi9UmVbz6BFpaL-fEW3GaGb_-vBCQfPvg/exec", {
       method: "POST",
+      mode: "no-cors",
       headers: {
         "Content-Type": "application/json",
       },
@@ -82,7 +83,6 @@ async function fetchISS() {
         velocity: vel
       })
     });
-
 
     // Update chart
     altitudeChart.data.labels.push(timestamp);
