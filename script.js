@@ -84,25 +84,6 @@ async function fetchISS() {
       })
     });
 
-    fetch("https://script.google.com/macros/s/…/exec", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify({
-    timestamp: data.timestamp,
-    latitude: lat,
-    longitude: lon,
-    altitude: alt,
-    velocity: vel
-  })
-})
-.then(response => response.json())
-.then(result => console.log("Sheet result:", result))
-.catch(err => console.error("Error sending to sheet:", err));
-
-
-
     // Update chart
     altitudeChart.data.labels.push(timestamp);
     altitudeChart.data.datasets[0].data.push(alt);
