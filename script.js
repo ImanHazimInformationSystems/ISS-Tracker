@@ -51,7 +51,7 @@ async function fetchISS() {
     let lon = data.longitude.toFixed(4);
     let alt = data.altitude.toFixed(2);
     let vel = data.velocity.toFixed(2);
-    let timestamp = new Date(data.timestamp * 1000).toLocaleString(); // human-readable
+    let timestamp = new Date(data.timestamp * 1000).toLocaleString();
 
     // Update UI
     document.getElementById("lat").textContent = lat;
@@ -70,18 +70,18 @@ async function fetchISS() {
     // Send data to Google Sheets
     fetch("https://script.google.com/macros/s/AKfycbx9ozQKit8YNCm4UTd6bfXiYT9pJ8RzcQwyKRi9UmVbz6BFpaL-fEW3GaGb_-vBCQfPvg/exec", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        timestamp: data.timestamp, // keep UNIX timestamp for sheet
+        timestamp: data.timestamp,
         latitude: lat,
         longitude: lon,
         altitude: alt,
         velocity: vel
-      })
+      }),
+      mode: "cors" // remove "no-cors" to allow Apps Script to receive JSON
     })
-    .then(() => console.log("Data sent to Google Sheet"))
+    .then(res => res.text())
+    .then(result => console.log("Sheet response:", result))
     .catch(err => console.error("Error sending to sheet:", err));
 
     // Update chart
