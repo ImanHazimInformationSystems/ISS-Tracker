@@ -69,7 +69,7 @@ async function fetchISS() {
     csvData.push([data.timestamp, lat, lon, alt, vel]);
 
     // Send data to Google Sheets
-    fetch("https://script.google.com/macros/s/AKfycbzb9QmsZ78sLw73a-9M7tlQQHYSCIy9cSG_Og780gPYaBvM_OZe4x3dPTAqZ2TU8hzkwg/exec", {
+    fetch("https://script.google.com/macros/s/AKfycbyX3hPY2dj6iXemIxNpOACyK5DkSkub0sNJi35gd8tFTwmL0BzTOxzaN0pZj00ZPlt9tQ/exec", {
       method: "POST",
       mode: "no-cors",
       headers: {
