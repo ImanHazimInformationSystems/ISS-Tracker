@@ -71,7 +71,6 @@ async function fetchISS() {
     // Send data to Google Sheets
     fetch("https://script.google.com/macros/s/AKfycbyX3hPY2dj6iXemIxNpOACyK5DkSkub0sNJi35gd8tFTwmL0BzTOxzaN0pZj00ZPlt9tQ/exec", {
       method: "POST",
-      mode: "no-cors",
       headers: {
         "Content-Type": "application/json",
       },
