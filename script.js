@@ -71,9 +71,8 @@ async function fetchISS() {
     // Send data to Google Sheets
     fetch("https://script.google.com/macros/s/AKfycbx9ozQKit8YNCm4UTd6bfXiYT9pJ8RzcQwyKRi9UmVbz6BFpaL-fEW3GaGb_-vBCQfPvg/exec", {
       method: "POST",
-      mode: "no-cors",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({
         timestamp: data.timestamp,
@@ -82,7 +81,11 @@ async function fetchISS() {
         altitude: alt,
         velocity: vel
       })
-    });
+    })
+      .then(response => response.json())
+      .then(result => console.log("Sheet result:", result))
+      .catch(err => console.error("Error sending to sheet:", err));
+
 
 
     // Update chart
