@@ -43,7 +43,7 @@ async function fetchISS() {
 
     fetch("https://script.google.com/macros/s/AKfycbx9ozQKit8YNCm4UTd6bfXiYT9pJ8RzcQwyKRi9UmVbz6BFpaL-fEW3GaGb_-vBCQfPvg/exec", {
       method: "POST",
-      mode: "cors",              // important! allow sending JSON body
+      mode: "cors",  // important
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         timestamp: data.timestamp,
@@ -56,6 +56,7 @@ async function fetchISS() {
       .then(res => res.json())
       .then(result => console.log("Sheet response:", result))
       .catch(err => console.error("Error sending to sheet:", err));
+
 
 
   } catch (e) {
