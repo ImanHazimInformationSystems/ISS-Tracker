@@ -43,17 +43,20 @@ async function fetchISS() {
 
     fetch("https://script.google.com/macros/s/AKfycbx9ozQKit8YNCm4UTd6bfXiYT9pJ8RzcQwyKRi9UmVbz6BFpaL-fEW3GaGb_-vBCQfPvg/exec", {
       method: "POST",
-       mode: "cors", // <-- important! allow cross-origin
+      mode: "cors",              // important! allow sending JSON body
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ timestamp: data.timestamp, latitude: lat, longitude: lon, altitude: alt, velocity: vel })
+      body: JSON.stringify({
+        timestamp: data.timestamp,
+        latitude: lat,
+        longitude: lon,
+        altitude: alt,
+        velocity: vel
+      })
     })
-    .then(res => res.text())
-    .then(result => console.log("Sheet response:", result))
-    .catch(err => console.error("Error sending to sheet:", err));
+      .then(res => res.json())
+      .then(result => console.log("Sheet response:", result))
+      .catch(err => console.error("Error sending to sheet:", err));
 
-    altitudeChart.data.labels.push(timestamp);
-    altitudeChart.data.datasets[0].data.push(alt);
-    altitudeChart.update();
 
   } catch (e) {
     console.error("API error:", e);
