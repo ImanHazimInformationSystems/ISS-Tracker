@@ -106,13 +106,14 @@ async function fetchISS() {
 setInterval(fetchISS, 5000);
 fetchISS();
 
-// Download CSV
+// Download LIVE CSV from Google Sheets
 document.getElementById("downloadCsvBtn").addEventListener("click", () => {
-  let csvContent = "data:text/csv;charset=utf-8,"
-    + csvData.map(e => e.join(",")).join("\n");
+  const url = "https://docs.google.com/spreadsheets/d/1RrRlewqyNXqjkbDiUETPLHUDzj6kk_Lc7qziQbYoUyc/export?format=csv&gid=0";
 
-  const a = document.createElement("a");
-  a.href = encodeURI(csvContent);
-  a.download = "iss_data.csv";
-  a.click();
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "iss_live_data.csv";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 });
